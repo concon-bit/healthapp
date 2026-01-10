@@ -6,8 +6,6 @@ import {
     getRedirectResult,
     onAuthStateChanged,
     signOut,
-    setPersistence,
-    browserLocalPersistence,
     type User,
     type Unsubscribe,
 } from 'firebase/auth';
@@ -30,18 +28,11 @@ export const onAuthChange = (callback: (user: User | null) => void): Unsubscribe
 
 export const loginWithGoogle = async (): Promise<void> => {
     try {
-        // 認証状態をローカルに保存する設定
-        await setPersistence(auth, browserLocalPersistence);
         // リダイレクトでログインを実行（iOSのSafariでも動作する）
+        // 永続化設定はfirebase.tsのinitializeAuthで設定済み
         await signInWithRedirect(auth, googleProvider);
     } catch (error) {
-        const firebaseError = error as { code?: string };
-        if (firebaseError.code === 'auth/missing-or-invalid-nonce') {
-            console.error('認証エラー(nonce):', error);
-            alert('認証に失敗しました。ブラウザのストレージ設定を確認してください。');
-        } else {
-            console.error('Firebase ログインに失敗:', error);
-        }
+        console.error('Firebase ログインに失敗:', error);
         throw error;
     }
 };
@@ -54,12 +45,11 @@ export const checkRedirectResult = async (): Promise<void> => {
             console.log('リダイレクトログイン成功:', result.user.email);
         }
     } catch (error) {
-        const firebaseError = error as { code?: string };
-        console.error('リダイレクト認証エラー:', error);
-        if (firebaseError.code === 'auth/missing-or-invalid-nonce') {
-            alert('認証に失敗しました。ブラウザのストレージ設定を確認してください。');
-        }
-        throw error;
+        // リダイレクト結果の取得に失敗してもエラーをthrowしない
+        // onAuthStateChangedがユーザー状態を正しく検出する
+        console.error('リダイレクト認証確認中にエラー発生:', error);
+        // 注意: ここでthrowしないようにする
+        // エラーがあってもアプリは起動を続行し、onAuthStateChangedで状態を検出する
     }
 };
 
