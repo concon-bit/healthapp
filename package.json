@@ -57,5 +57,9 @@
   },
   "devDependencies": {
     "sharp": "^0.34.5"
+  },
+  "overrides": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0"
   }
 }

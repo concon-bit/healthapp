@@ -77,5 +77,5 @@ export interface OptionMap {
 }
 
 export interface IconMap {
-    [key: string]: React.ReactNode;
+    [key: string]: React.ReactElement;
 }
