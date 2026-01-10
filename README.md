@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+# 体調管理アプリ (Health App)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+iPhoneでの利用を想定した、毎日の体調を記録・分析できる健康管理アプリです。
 
-## Available Scripts
+## 🎯 主な機能
 
-In the project directory, you can run:
+- **体調記録** - 体温、体調、排便、睡眠、ストレス、水分摂取量などを記録
+- **カレンダー表示** - 月間での記録を一覧表示、日付タップで詳細確認
+- **グラフ分析** - 体温推移を可視化、統計情報（最高/最低/平均）を表示
+- **Googleログイン** - Firebase Authenticationによる認証
 
-### `npm start`
+## 🛠 技術スタック
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| カテゴリ | 技術 |
+|---------|------|
+| フロントエンド | React 19, TypeScript |
+| UI | Material UI (MUI) v7 |
+| 状態管理 | Redux Toolkit |
+| バックエンド | Firebase (Auth, Firestore) |
+| グラフ | Highcharts |
+| カレンダー | FullCalendar |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📁 プロジェクト構成
 
-### `npm test`
+```
+src/
+├── components/ui/     # 共通UIコンポーネント (Layout, Header, Footer)
+├── features/          # 機能別コンポーネント
+│   ├── auth/          # 認証機能
+│   ├── dashboard/     # ダッシュボード
+│   └── health-log/    # 体調記録機能
+├── redux/             # 状態管理 (store, slices, hooks)
+├── services/          # 外部サービス連携 (Firebase)
+├── constants/         # 定数定義
+└── types/             # TypeScript型定義
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 セットアップ
 
-### `npm run build`
+### 1. 依存関係のインストール
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. 環境変数の設定
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`.env` ファイルをプロジェクトルートに作成：
 
-### `npm run eject`
+```env
+REACT_APP_FIREBASE_API_KEY=your_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 3. 開発サーバーの起動
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📦 ビルド
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm run build
+```
 
-## Learn More
+## 🔧 開発時のコマンド
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+| コマンド | 説明 |
+|---------|------|
+| `npm start` | 開発サーバー起動 |
+| `npm run build` | 本番ビルド |
+| `npm test` | テスト実行 |
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📝 Git コミット規約
 
-### Code Splitting
+コミットメッセージは以下の形式を推奨：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+<type>: <subject>
 
-### Analyzing the Bundle Size
+<body>
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Type一覧
+- `feat`: 新機能
+- `fix`: バグ修正
+- `refactor`: リファクタリング
+- `style`: スタイル変更（CSS等）
+- `docs`: ドキュメント
+- `chore`: ビルド/設定変更
 
-### Making a Progressive Web App
+### 例
+```
+feat: TypeScript移行とMUI導入
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- 全ファイルをTypeScriptに変換
+- Material UI v7を採用
+- Feature-based構成に再編成
+- グラフ機能を強化（統計カード追加）
+```
 
-### Advanced Configuration
+## 📱 動作環境
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- iOS Safari (iPhone推奨)
+- Chrome, Firefox, Safari (デスクトップ)
 
-### Deployment
+## ⚠️ 注意事項
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- `.env` ファイルはGitにコミットしないでください
+- Firebase設定は各自のプロジェクトで取得してください
 
-### `npm run build` fails to minify
+## 📄 ライセンス
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT License
