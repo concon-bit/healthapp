@@ -2,7 +2,6 @@
 
 import { auth, googleProvider, db } from '../firebase';
 import {
-    signInWithRedirect,
     signInWithPopup,
     getRedirectResult,
     onAuthStateChanged,
@@ -35,16 +34,9 @@ export const onAuthChange = (callback: (user: User | null) => void): Unsubscribe
 export const loginWithGoogle = async (): Promise<void> => {
     try {
         console.log('ログイン開始 - デバイス:', isMobileDevice() ? 'モバイル' : 'PC');
-
-        if (isMobileDevice()) {
-            // モバイル: リダイレクト認証を使用
-            console.log('signInWithRedirect を実行...');
-            await signInWithRedirect(auth, googleProvider);
-        } else {
-            // PC: ポップアップ認証を使用（より安定）
-            console.log('signInWithPopup を実行...');
-            await signInWithPopup(auth, googleProvider);
-        }
+        // モバイル・PC共にポップアップ認証を使用（iOS Safari ITP対応）
+        console.log('signInWithPopup を実行...');
+        await signInWithPopup(auth, googleProvider);
     } catch (error) {
         console.error('Firebase ログインに失敗:', error);
         throw error;
