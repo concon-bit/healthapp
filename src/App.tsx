@@ -14,25 +14,40 @@ function App() {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        // リダイレクト認証の結果を確認（iOSのSafari対応）
-        checkRedirectResult().catch((error) => {
-            console.error('リダイレクト認証確認エラー:', error);
-        });
+        let unsubscribe: (() => void) | undefined;
 
-        const unsubscribe = onAuthChange((user) => {
-            if (user) {
-                const serializedUser = {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: user.displayName,
-                };
-                dispatch(setUser(serializedUser));
-                dispatch(fetchLogs(user.uid));
-            } else {
-                dispatch(setUser(null));
+        const initAuth = async () => {
+            try {
+                // リダイレクト認証の結果を先に確認（iOSのSafari対応）
+                // これを先に処理しないと、onAuthChangeがnullを検出してログイン画面に戻ってしまう
+                await checkRedirectResult();
+            } catch (error) {
+                console.error('リダイレクト認証確認エラー:', error);
             }
-        });
-        return () => unsubscribe();
+
+            // リダイレクト結果の確認後に認証状態リスナーを設定
+            unsubscribe = onAuthChange((user) => {
+                if (user) {
+                    const serializedUser = {
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName,
+                    };
+                    dispatch(setUser(serializedUser));
+                    dispatch(fetchLogs(user.uid));
+                } else {
+                    dispatch(setUser(null));
+                }
+            });
+        };
+
+        initAuth();
+
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
     }, [dispatch]);
 
     if (loading) {

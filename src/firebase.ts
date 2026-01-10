@@ -1,7 +1,12 @@
 // src/firebase.ts
 
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import {
+    initializeAuth,
+    browserLocalPersistence,
+    indexedDBLocalPersistence,
+    GoogleAuthProvider,
+} from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 // .envファイルから環境変数を読み込む
@@ -19,5 +24,11 @@ const app = initializeApp(firebaseConfig);
 
 // 各サービスをエクスポート
 export const db = getFirestore(app);
-export const auth = getAuth(app);
+
+// 認証の初期化（永続化メカニズムを明示的に設定）
+// indexedDBLocalPersistenceを優先し、失敗した場合はbrowserLocalPersistenceにフォールバック
+export const auth = initializeAuth(app, {
+    persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+});
+
 export const googleProvider = new GoogleAuthProvider();
