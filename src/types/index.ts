@@ -60,7 +60,7 @@ export interface LogsState {
 }
 
 export type ActiveMode = 'health';
-export type ActiveHealthTab = 'log' | 'chart' | 'calendar';
+export type ActiveHealthTab = 'log' | 'chart' | 'calendar' | 'stats';
 
 export interface UIState {
     activeMode: ActiveMode;

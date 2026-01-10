@@ -238,29 +238,68 @@ const DailyLogForm: React.FC = () => {
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                         体温
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 1 }}>
-                        <IconButton onClick={() => adjustTemp(-0.01)} disabled={isFormDisabled}>
-                            <ChevronLeftIcon />
-                        </IconButton>
-                        <Typography variant="h2" sx={{ minWidth: 100, textAlign: 'center' }}>
-                            {formData.temp.toFixed(2)}°C
-                        </Typography>
-                        <IconButton onClick={() => adjustTemp(0.01)} disabled={isFormDisabled}>
-                            <ChevronRightIcon />
-                        </IconButton>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                        <Button
+                            variant="outlined"
+                            onClick={() => adjustTemp(-0.01)}
+                            disabled={isFormDisabled}
+                            sx={{
+                                minWidth: 70,
+                                minHeight: 70,
+                                fontSize: '1.2rem',
+                                fontWeight: 'bold',
+                                borderRadius: 2,
+                                borderWidth: 2,
+                                '&:hover': { borderWidth: 2 },
+                            }}
+                        >
+                            -0.01
+                        </Button>
+                        <TextField
+                            type="number"
+                            value={formData.temp}
+                            onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+                                if (!isNaN(val) && val >= 35.0 && val <= 42.0) {
+                                    handleFormChange('temp', val);
+                                }
+                            }}
+                            disabled={isFormDisabled}
+                            inputProps={{
+                                step: 0.01,
+                                min: 35.0,
+                                max: 42.0,
+                                style: { textAlign: 'center', fontSize: '2rem', fontWeight: 'bold' },
+                            }}
+                            sx={{
+                                width: 140,
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: 2,
+                                    bgcolor: 'grey.50',
+                                },
+                                '& input': {
+                                    py: 1.5,
+                                },
+                            }}
+                        />
+                        <Typography variant="h4" sx={{ ml: -1 }}>°C</Typography>
+                        <Button
+                            variant="outlined"
+                            onClick={() => adjustTemp(0.01)}
+                            disabled={isFormDisabled}
+                            sx={{
+                                minWidth: 70,
+                                minHeight: 70,
+                                fontSize: '1.2rem',
+                                fontWeight: 'bold',
+                                borderRadius: 2,
+                                borderWidth: 2,
+                                '&:hover': { borderWidth: 2 },
+                            }}
+                        >
+                            +0.01
+                        </Button>
                     </Box>
-                    <Slider
-                        min={35.0}
-                        max={42.0}
-                        step={0.01}
-                        value={formData.temp}
-                        onChange={(_, val) => handleFormChange('temp', val as number)}
-                        disabled={isFormDisabled}
-                        sx={{
-                            '& .MuiSlider-track': { bgcolor: 'primary.light' },
-                            '& .MuiSlider-thumb': { borderColor: 'primary.main' },
-                        }}
-                    />
                 </Box>
 
                 {/* 今日の体調 */}

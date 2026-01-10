@@ -168,19 +168,20 @@ const Chart: React.FC = () => {
                 style: { fontSize: '10px' },
             },
             min: 35.5,
-            max: 38.0,
+            max: 38.5,
             gridLineColor: '#f0f0f0',
-            // 基準線
+            // 発熱ライン（37.5℃）
             plotLines: [
                 {
-                    value: 37.0,
-                    color: '#ef476f',
+                    value: 37.5,
+                    color: '#ef4444',
                     dashStyle: 'Dash',
-                    width: 1,
+                    width: 2,
+                    zIndex: 5,
                     label: {
-                        text: '37°C',
+                        text: '発熱ライン',
                         align: 'right',
-                        style: { fontSize: '9px', color: '#ef476f' },
+                        style: { fontSize: '10px', color: '#ef4444', fontWeight: 'bold' },
                     },
                 },
             ],
@@ -201,12 +202,17 @@ const Chart: React.FC = () => {
                 name: '体温',
                 type: 'areaspline',
                 data: tempData,
-                color: '#ef476f',
+                color: '#3b82f6', // 青（正常）
+                negativeColor: '#3b82f6',
+                zones: [
+                    { value: 37.5, color: '#3b82f6' }, // 青（正常）
+                    { color: '#ef4444' }, // 赤（発熱）
+                ],
                 fillColor: {
                     linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
                     stops: [
-                        [0, 'rgba(239, 71, 111, 0.3)'],
-                        [1, 'rgba(239, 71, 111, 0)'],
+                        [0, 'rgba(59, 130, 246, 0.3)'],
+                        [1, 'rgba(59, 130, 246, 0)'],
                     ],
                 },
                 connectNulls: true,
@@ -215,7 +221,7 @@ const Chart: React.FC = () => {
         legend: { enabled: false },
         tooltip: {
             backgroundColor: 'white',
-            borderColor: '#ef476f',
+            borderColor: '#3b82f6',
             borderRadius: 8,
             shadow: true,
             useHTML: true,

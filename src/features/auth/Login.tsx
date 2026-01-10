@@ -1,17 +1,34 @@
 // src/features/auth/Login.tsx
 
-import React from 'react';
-import { Box, Button, Container, Paper, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, Container, Paper, Typography, Alert } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import { loginWithGoogle } from '../../services/firebaseService';
 
 const Login: React.FC = () => {
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+
     const handleLogin = async () => {
+        setError(null);
+        setLoading(true);
         try {
             await loginWithGoogle();
-        } catch (error) {
-            console.error('ログインに失敗しました:', error);
-            alert('ログインに失敗しました。');
+            // ログイン成功時はonAuthChangeがユーザーを設定するため、ここでは何もしない
+        } catch (err) {
+            // ユーザーがキャンセルした場合はエラーを表示しない
+            const firebaseError = err as { code?: string };
+            if (firebaseError.code === 'auth/popup-closed-by-user') {
+                console.log('ログインがキャンセルされました');
+            } else if (firebaseError.code === 'auth/cancelled-popup-request') {
+                // 複数のポップアップリクエストがあった場合
+                console.log('ログインリクエストがキャンセルされました');
+            } else {
+                console.error('ログインに失敗しました:', err);
+                setError('ログインに失敗しました。もう一度お試しください。');
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -51,11 +68,17 @@ const Login: React.FC = () => {
                         <br />
                         日々の健康を記録・分析しましょう。
                     </Typography>
+                    {error && (
+                        <Alert severity="error" sx={{ mb: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
                     <Button
                         variant="contained"
                         size="large"
                         startIcon={<GoogleIcon />}
                         onClick={handleLogin}
+                        disabled={loading}
                         sx={{
                             py: 1.5,
                             px: 4,
@@ -63,7 +86,7 @@ const Login: React.FC = () => {
                             borderRadius: 2,
                         }}
                     >
-                        Googleでログイン
+                        {loading ? 'ログイン中...' : 'Googleでログイン'}
                     </Button>
                 </Paper>
             </Container>

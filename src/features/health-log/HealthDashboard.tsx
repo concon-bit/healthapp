@@ -8,6 +8,7 @@ import { useAppSelector } from '../../redux/hooks';
 const DailyLogForm = lazy(() => import('./DailyLogForm'));
 const Chart = lazy(() => import('./Chart'));
 const CalendarView = lazy(() => import('./CalendarView'));
+const Statistics = lazy(() => import('./Statistics'));
 
 // ローディングスピナー
 const LoadingFallback = () => (
@@ -59,7 +60,7 @@ const HealthDashboard: React.FC = () => {
 
     // スライド方向を決定
     const getDirection = (tab: string): 'left' | 'right' => {
-        const tabOrder = ['log', 'chart', 'calendar'];
+        const tabOrder = ['log', 'chart', 'calendar', 'stats'];
         const prevIndex = tabOrder.indexOf(prevTabRef.current);
         const currentIndex = tabOrder.indexOf(tab);
         return currentIndex > prevIndex ? 'left' : 'right';
@@ -80,6 +81,9 @@ const HealthDashboard: React.FC = () => {
                 </TabPanel>
                 <TabPanel active={activeHealthTab === 'calendar'} direction={getDirection('calendar')}>
                     <CalendarView />
+                </TabPanel>
+                <TabPanel active={activeHealthTab === 'stats'} direction={getDirection('stats')}>
+                    <Statistics />
                 </TabPanel>
             </Suspense>
         </Box>
