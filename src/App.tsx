@@ -7,13 +7,18 @@ import Login from './features/auth/Login';
 import { useAppSelector, useAppDispatch } from './redux/hooks';
 import { setUser } from './redux/userSlice';
 import { fetchLogs } from './redux/logsSlice';
-import { onAuthChange } from './services/firebaseService';
+import { onAuthChange, checkRedirectResult } from './services/firebaseService';
 
 function App() {
     const { currentUser, loading } = useAppSelector((state) => state.user);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
+        // リダイレクト認証の結果を確認（iOSのSafari対応）
+        checkRedirectResult().catch((error) => {
+            console.error('リダイレクト認証確認エラー:', error);
+        });
+
         const unsubscribe = onAuthChange((user) => {
             if (user) {
                 const serializedUser = {

@@ -2,7 +2,8 @@
 
 import { auth, googleProvider, db } from '../firebase';
 import {
-    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     onAuthStateChanged,
     signOut,
     setPersistence,
@@ -31,8 +32,8 @@ export const loginWithGoogle = async (): Promise<void> => {
     try {
         // 認証状態をローカルに保存する設定
         await setPersistence(auth, browserLocalPersistence);
-        // ポップアップでログインを実行
-        await signInWithPopup(auth, googleProvider);
+        // リダイレクトでログインを実行（iOSのSafariでも動作する）
+        await signInWithRedirect(auth, googleProvider);
     } catch (error) {
         const firebaseError = error as { code?: string };
         if (firebaseError.code === 'auth/missing-or-invalid-nonce') {
@@ -40,6 +41,23 @@ export const loginWithGoogle = async (): Promise<void> => {
             alert('認証に失敗しました。ブラウザのストレージ設定を確認してください。');
         } else {
             console.error('Firebase ログインに失敗:', error);
+        }
+        throw error;
+    }
+};
+
+// リダイレクト後の認証結果を確認する関数
+export const checkRedirectResult = async (): Promise<void> => {
+    try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+            console.log('リダイレクトログイン成功:', result.user.email);
+        }
+    } catch (error) {
+        const firebaseError = error as { code?: string };
+        console.error('リダイレクト認証エラー:', error);
+        if (firebaseError.code === 'auth/missing-or-invalid-nonce') {
+            alert('認証に失敗しました。ブラウザのストレージ設定を確認してください。');
         }
         throw error;
     }

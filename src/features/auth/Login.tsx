@@ -14,22 +14,22 @@ const Login: React.FC = () => {
         setLoading(true);
         try {
             await loginWithGoogle();
-            // ログイン成功時はonAuthChangeがユーザーを設定するため、ここでは何もしない
+            // リダイレクト認証のため、ここでは画面が切り替わる
+            // 認証結果はApp.tsxのcheckRedirectResultで処理される
         } catch (err) {
-            // ユーザーがキャンセルした場合はエラーを表示しない
             const firebaseError = err as { code?: string };
-            if (firebaseError.code === 'auth/popup-closed-by-user') {
+            if (firebaseError.code === 'auth/redirect-cancelled-by-user') {
                 console.log('ログインがキャンセルされました');
-            } else if (firebaseError.code === 'auth/cancelled-popup-request') {
-                // 複数のポップアップリクエストがあった場合
-                console.log('ログインリクエストがキャンセルされました');
+            } else if (firebaseError.code === 'auth/redirect-operation-pending') {
+                // リダイレクト操作が進行中
+                console.log('リダイレクト操作が進行中です');
             } else {
                 console.error('ログインに失敗しました:', err);
                 setError('ログインに失敗しました。もう一度お試しください。');
             }
-        } finally {
             setLoading(false);
         }
+        // リダイレクト発生時はsetLoadingをfalseにしない（画面遷移するため）
     };
 
     return (
