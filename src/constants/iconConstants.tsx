@@ -61,3 +61,13 @@ export const ALCOHOL_ICONS: IconMap = {
     yes: icon(FaBeer, { color: '#f97316' }),
     no: icon(FaRegTimesCircle, { color: '#a3a3a3' }),
 };
+
+// 生理記録アイコン - シンプルなドット表現
+export const PERIOD_ICONS: IconMap = {
+    start: <span style={{ color: '#ec4899', fontSize: '1.2rem' }}>●</span>,
+    ongoing: <span style={{ color: '#f9a8d4', fontSize: '1rem' }}>━</span>,
+    end: <span style={{ color: '#ec4899', fontSize: '1.2rem' }}>●</span>,
+};
+
+// カレンダー用生理アイコン（使用しない - カレンダーでは直接スタイル適用）
+export const PERIOD_CALENDAR_ICON = <span style={{ color: '#ec4899' }}>●</span>;

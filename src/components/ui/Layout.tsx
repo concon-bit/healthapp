@@ -37,6 +37,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     sx={{
                         flexGrow: 1,
                         p: 2,
+                        pb: 12, // Extra padding for fixed bottom nav
                         overflow: 'auto',
                     }}
                 >

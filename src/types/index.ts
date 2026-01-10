@@ -17,6 +17,7 @@ export type PoopType = 'yes' | 'no' | null;
 export type SleepType = 'good' | 'normal' | 'bad' | null;
 export type StressType = 'low' | 'medium' | 'high' | null;
 export type AlcoholType = 'yes' | 'no' | null;
+export type PeriodType = 'start' | 'ongoing' | 'end' | null;
 
 export interface HealthLog {
     id?: string;
@@ -31,6 +32,7 @@ export interface HealthLog {
     alcohol: AlcoholType;
     symptoms: Record<string, boolean>;
     memo: string;
+    period: PeriodType; // 生理記録
 }
 
 export interface HealthLogFormData {
@@ -43,6 +45,7 @@ export interface HealthLogFormData {
     alcohol: AlcoholType;
     symptoms: Record<string, boolean>;
     memo: string;
+    period: PeriodType;
 }
 
 // ==========================================

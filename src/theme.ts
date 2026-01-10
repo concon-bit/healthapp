@@ -2,36 +2,47 @@
 
 import { createTheme } from '@mui/material/styles';
 
-// MUI Theme定義
+// WellNote Theme - 爽やかなティール/ミント系カラー
 export const theme = createTheme({
     palette: {
         primary: {
-            main: '#ef476f',
-            light: '#ff7a9c',
-            dark: '#b81d48',
+            main: '#0d9488', // ティール
+            light: '#5eead4',
+            dark: '#115e59',
             contrastText: '#fff',
         },
         secondary: {
-            main: '#577399',
-            light: '#7a9bc5',
-            dark: '#2d4a6f',
+            main: '#6366f1', // インディゴ
+            light: '#a5b4fc',
+            dark: '#4338ca',
         },
         background: {
-            default: '#f4f7f9',
+            default: '#f0fdfa',
             paper: '#ffffff',
         },
         text: {
-            primary: '#333333',
-            secondary: '#666666',
+            primary: '#1f2937',
+            secondary: '#6b7280',
         },
         success: {
             main: '#22c55e',
+            light: '#86efac',
+            dark: '#16a34a',
         },
         warning: {
             main: '#f59e0b',
+            light: '#fcd34d',
+            dark: '#d97706',
         },
         error: {
             main: '#ef4444',
+            light: '#fca5a5',
+            dark: '#dc2626',
+        },
+        info: {
+            main: '#3b82f6',
+            light: '#93c5fd',
+            dark: '#1d4ed8',
         },
     },
     typography: {

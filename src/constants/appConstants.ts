@@ -36,3 +36,9 @@ export const ALCOHOL_OPTIONS: OptionMap = {
     yes: 'あり',
     no: 'なし',
 };
+
+export const PERIOD_OPTIONS: OptionMap = {
+    start: '開始',
+    ongoing: '期間中',
+    end: '終了',
+};
