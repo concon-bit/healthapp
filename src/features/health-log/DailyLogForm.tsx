@@ -169,8 +169,8 @@ const DailyLogForm: React.FC = () => {
 
     const decreaseTemp = useCallback(() => adjustTemp(-0.01), [adjustTemp]);
     const increaseTemp = useCallback(() => adjustTemp(0.01), [adjustTemp]);
-    const decreaseTempPress = useLongPress(decreaseTemp, 80);
-    const increaseTempPress = useLongPress(increaseTemp, 80);
+    const decreaseTempPress = useLongPress(decreaseTemp, { repeatDelay: 80 });
+    const increaseTempPress = useLongPress(increaseTemp, { repeatDelay: 80 });
 
     // 症状トグル
     const handleToggleChange = (subField: string, value: boolean) => {
@@ -180,14 +180,35 @@ const DailyLogForm: React.FC = () => {
         }));
     };
 
-    // テンキー入力blur時に確定
+    // テンキー入力blur時に確定（小数点第2位まで）
     const handleTempInputBlur = () => {
         const value = parseFloat(tempInputValue);
         if (!isNaN(value) && value >= 35.0 && value <= 42.0) {
-            handleFormChange('temp', value);
+            // 小数点第2位で丸める
+            const roundedValue = Math.round(value * 100) / 100;
+            handleFormChange('temp', roundedValue);
         }
         setTempInputMode(false);
         setTempInputValue('');
+    };
+
+    // 体温入力の制限（小数点第2位まで、3桁目入力で自動小数点挿入）
+    const handleTempInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let inputValue = e.target.value;
+
+        // 数字と小数点のみを許可（マイナスは体温には不要）
+        inputValue = inputValue.replace(/[^\d.]/g, '');
+
+        // 小数点がない場合、3桁目の入力で自動的に小数点を挿入
+        // 例: 365 → 36.5, 3650 → 36.50
+        if (!inputValue.includes('.') && inputValue.length >= 3) {
+            inputValue = inputValue.slice(0, 2) + '.' + inputValue.slice(2);
+        }
+
+        // 小数点以下2桁までに制限
+        if (/^\d*\.?\d{0,2}$/.test(inputValue) || inputValue === '') {
+            setTempInputValue(inputValue);
+        }
     };
 
     const isFormDisabled = logExists && isLocked;
@@ -286,7 +307,7 @@ const DailyLogForm: React.FC = () => {
                                 inputMode="decimal"
                                 placeholder="36.50"
                                 value={tempInputValue}
-                                onChange={(e) => setTempInputValue(e.target.value)}
+                                onChange={handleTempInputChange}
                                 onBlur={handleTempInputBlur}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
@@ -392,6 +413,45 @@ const DailyLogForm: React.FC = () => {
                         />
                     ))}
                 </Box>
+            </Box>
+
+            {/* 生理記録 - メインフォームに表示 */}
+            <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    生理
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                    <IconButtonOption
+                        label={formData.period === 'start' ? '開始中' : '開始'}
+                        icon={<Box sx={{
+                            width: 14,
+                            height: 14,
+                            bgcolor: formData.period === 'start' ? '#ec4899' : '#e5e7eb',
+                            borderRadius: '50%',
+                            transition: 'all 0.2s',
+                        }} />}
+                        selected={formData.period === 'start'}
+                        onClick={() => !isFormDisabled && handleFormChange('period', formData.period === 'start' ? null : 'start' as PeriodType)}
+                    />
+                    <IconButtonOption
+                        label="終了"
+                        icon={<Box sx={{
+                            width: 14,
+                            height: 14,
+                            bgcolor: formData.period === 'end' ? '#ec4899' : '#e5e7eb',
+                            borderRadius: '50%',
+                            border: formData.period === 'end' ? 'none' : '2px solid #d1d5db',
+                            transition: 'all 0.2s',
+                        }} />}
+                        selected={formData.period === 'end'}
+                        onClick={() => !isFormDisabled && handleFormChange('period', formData.period === 'end' ? null : 'end' as PeriodType)}
+                    />
+                </Box>
+                {isFormDisabled && (
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 1 }}>
+                        🔒 編集するには鍵をタップ
+                    </Typography>
+                )}
             </Box>
 
             {/* その他項目 */}
@@ -500,41 +560,7 @@ const DailyLogForm: React.FC = () => {
                             </Box>
                         </Box>
 
-                        {/* 生理記録 */}
-                        <Box sx={{ mb: 1, textAlign: 'center' }}>
-                            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                                生理
-                            </Typography>
-                            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                                <IconButtonOption
-                                    label={formData.period === 'start' ? '開始中' : '開始'}
-                                    icon={<Box sx={{
-                                        width: 14,
-                                        height: 14,
-                                        bgcolor: formData.period === 'start' ? '#ec4899' : '#e5e7eb',
-                                        borderRadius: '50%',
-                                        transition: 'all 0.2s',
-                                    }} />}
-                                    selected={formData.period === 'start'}
-                                    onClick={() => handleFormChange('period', formData.period === 'start' ? null : 'start' as PeriodType)}
-                                    disabled={isFormDisabled}
-                                />
-                                <IconButtonOption
-                                    label="終了"
-                                    icon={<Box sx={{
-                                        width: 14,
-                                        height: 14,
-                                        bgcolor: formData.period === 'end' ? '#ec4899' : '#e5e7eb',
-                                        borderRadius: '50%',
-                                        border: formData.period === 'end' ? 'none' : '2px solid #d1d5db',
-                                        transition: 'all 0.2s',
-                                    }} />}
-                                    selected={formData.period === 'end'}
-                                    onClick={() => handleFormChange('period', formData.period === 'end' ? null : 'end' as PeriodType)}
-                                    disabled={isFormDisabled}
-                                />
-                            </Box>
-                        </Box>
+
                     </Box>
                 </Collapse>
 

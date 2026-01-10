@@ -3,6 +3,7 @@
 import { auth, googleProvider, db } from '../firebase';
 import {
     signInWithRedirect,
+    signInWithPopup,
     getRedirectResult,
     onAuthStateChanged,
     signOut,
@@ -22,15 +23,28 @@ import type { HealthLog } from '../types';
 
 // --- Authentication ---
 
+// モバイルデバイス判定
+const isMobileDevice = (): boolean => {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+};
+
 export const onAuthChange = (callback: (user: User | null) => void): Unsubscribe => {
     return onAuthStateChanged(auth, callback);
 };
 
 export const loginWithGoogle = async (): Promise<void> => {
     try {
-        // リダイレクトでログインを実行（iOSのSafariでも動作する）
-        // 永続化設定はfirebase.tsのinitializeAuthで設定済み
-        await signInWithRedirect(auth, googleProvider);
+        console.log('ログイン開始 - デバイス:', isMobileDevice() ? 'モバイル' : 'PC');
+
+        if (isMobileDevice()) {
+            // モバイル: リダイレクト認証を使用
+            console.log('signInWithRedirect を実行...');
+            await signInWithRedirect(auth, googleProvider);
+        } else {
+            // PC: ポップアップ認証を使用（より安定）
+            console.log('signInWithPopup を実行...');
+            await signInWithPopup(auth, googleProvider);
+        }
     } catch (error) {
         console.error('Firebase ログインに失敗:', error);
         throw error;
@@ -40,16 +54,16 @@ export const loginWithGoogle = async (): Promise<void> => {
 // リダイレクト後の認証結果を確認する関数
 export const checkRedirectResult = async (): Promise<void> => {
     try {
+        console.log('リダイレクト結果を確認中...');
         const result = await getRedirectResult(auth);
         if (result) {
             console.log('リダイレクトログイン成功:', result.user.email);
+        } else {
+            console.log('リダイレクト結果なし（通常起動）');
         }
     } catch (error) {
         // リダイレクト結果の取得に失敗してもエラーをthrowしない
-        // onAuthStateChangedがユーザー状態を正しく検出する
         console.error('リダイレクト認証確認中にエラー発生:', error);
-        // 注意: ここでthrowしないようにする
-        // エラーがあってもアプリは起動を続行し、onAuthStateChangedで状態を検出する
     }
 };
 
