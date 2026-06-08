@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setActiveHealthTab, setSelectedDate } from '../../redux/uiSlice';
 import LogDetailModal from './LogDetailModal';
 import type { HealthLog } from '../../types';
-import { subDays, isValid, format, addMonths, subMonths } from 'date-fns';
+import { subDays, isValid, format } from 'date-fns';
 
 /**
  * 日付をローカルタイムゾーンでyyyy-MM-dd形式に変換
@@ -317,21 +317,15 @@ const CalendarView: React.FC = () => {
 
     // ナビゲーション
     const handlePrev = () => {
-        if (calendarApi) {
-            calendarApi.prev();
-        }
-        setCurrentDate(prev => subMonths(prev, 1));
+        calendarApi?.prev();
     };
 
     const handleNext = () => {
-        if (calendarApi) {
-            calendarApi.next();
-        }
-        setCurrentDate(prev => addMonths(prev, 1));
+        calendarApi?.next();
     };
 
     const handleDatesSet = (arg: DatesSetArg) => {
-        setCurrentDate(arg.start);
+        setCurrentDate(arg.view.currentStart);
     };
 
     const handleCalendarRef = (ref: FullCalendar | null) => {
@@ -383,13 +377,13 @@ const CalendarView: React.FC = () => {
                     borderRadius: 2,
                 }}
             >
-                <IconButton onClick={handlePrev} sx={{ color: 'primary.main' }}>
+                <IconButton aria-label="前の月" onClick={handlePrev} sx={{ color: 'primary.main' }}>
                     <ChevronLeftIcon />
                 </IconButton>
                 <Typography variant="h3" fontWeight="bold" color="text.primary">
                     {format(currentDate, 'yyyy年M月')}
                 </Typography>
-                <IconButton onClick={handleNext} sx={{ color: 'primary.main' }}>
+                <IconButton aria-label="次の月" onClick={handleNext} sx={{ color: 'primary.main' }}>
                     <ChevronRightIcon />
                 </IconButton>
             </Box>
